@@ -1,5 +1,5 @@
 # nasa_apod_collector
-This repository was a part of the recruitment task to show off my Golag skills.
+This repository was a part of the recruitment task to show off my Golang skills.
 The task was to create a micro-service to collect URLs for given date range from NASA's Astronomy Picture of the Day.
 You can check it out here: https://apod.nasa.gov/apod/astropix.html
 
@@ -20,7 +20,7 @@ In the project directory, you can run:
 |  |  |
 | `make docker-build` | Runs the docker build command |
 | `make docker-run` | Runs the app inside docker container |
-| `make test` | Runs go test in the docker container |
+| `make docker-test` | Runs go test in the docker container |
 
 By default the app can be accessed on [http://localhost:8000](http://localhost:8000).
 
@@ -30,7 +30,7 @@ A single endpoint is exposed under the following path:
 `GET` `/pictures?start_date=2020-01-04&end_date=2020-02-05`  
 
 Since the NASA API publishes one image per day the `start_date` and `end_date` parameters define
-range of pictures to be processed. Expected response from the endpoint should be a valid JSON message
+range of pictures to be processed. The response from the endpoint is a JSON message
 containing all the urls in the following format:  
 
 `{“urls”: ["https://apod.nasa.gov/apod/image/2008/AlienThrone_Zajac_3807.jpg", ...]}`  
