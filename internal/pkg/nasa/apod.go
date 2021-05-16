@@ -54,21 +54,11 @@ func NewAPODProvider() *APODProvider {
 }
 
 func (ap *APODProvider) GetPicture(ctx context.Context, client *http.Client, picTime time.Time) (*Image, error) {
-	if picTime.Before(time.Date(1995, 6, 16, 0, 0, 0, 0, time.UTC)) ||
-		picTime.After(time.Now()) {
-		return nil, errors.New("request date must be between Jun 16, 1995 and today")
-	}
-	date := picTime.Format("2006-01-02")
-	u, err := url.Parse(ap.baseURL)
-	if err != nil {
+	if err := validateDate(picTime); err != nil {
 		return nil, err
 	}
 
-	q := u.Query()
-	q.Set("api_key", ap.apiKey)
-	q.Add("date", date)
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	req, err := createAPODRequest(ctx, ap, picTime)
 	if err != nil {
 		return nil, err
 	}
@@ -96,4 +86,30 @@ func (ap *APODProvider) GetPicture(ctx context.Context, client *http.Client, pic
 		ni.ApodDate = t
 	}
 	return &ni, nil
+}
+
+func validateDate(picTime time.Time) error {
+	if picTime.Before(time.Date(1995, 6, 16, 0, 0, 0, 0, time.UTC)) ||
+		picTime.After(time.Now()) {
+		return errors.New("request date must be between Jun 16, 1995 and today")
+	}
+	return nil
+}
+
+func createAPODRequest(ctx context.Context, ap *APODProvider, picTime time.Time) (req *http.Request, err error) {
+	date := picTime.Format("2006-01-02")
+	u, err := url.Parse(ap.baseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	q := u.Query()
+	q.Set("api_key", ap.apiKey)
+	q.Add("date", date)
+	u.RawQuery = q.Encode()
+	req, err = http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return
 }

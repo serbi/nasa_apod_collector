@@ -1,3 +1,12 @@
+build:
+	go build cmd/nasa_apod_collector/main.go
+
+run:
+	go run cmd/nasa_apod_collector/main.go
+
+test:
+	go test ./...
+
 docker-build:
 	docker build -t nasa_apod_collector .
 
